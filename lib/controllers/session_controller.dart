@@ -104,11 +104,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   void createRtmClientEvents(
       AgoraRtmClientEventHandler agoraRtmClientEventHandler) {
-    rtmClientEventHandler(
+    rtmClientEventHandler(agoraRtmCallManager: AgoraRtmCallManager(0),
       agoraRtmClient: value.agoraRtmClient!,
       agoraRtmClientEventHandler: agoraRtmClientEventHandler,
       sessionController: this,
     );
+    
   }
 
   /// Function to set all the channel properties.
