@@ -19,7 +19,6 @@ import '../controllers/rtc_buttons.dart';
 class AgoraClient {
   // final AgoraSettings settings;
 
-  final bool muteMic;
 
   /// [AgoraConnectionData] is a class used to store all the connection details to authenticate your account with the Agora SDK.
   final AgoraConnectionData agoraConnectionData;
@@ -44,7 +43,6 @@ class AgoraClient {
   AgoraClient({
     // required this.settings,
     required this.agoraConnectionData,
-    required this.muteMic,
     this.enabledPermission,
     this.agoraChannelData,
     this.agoraEventHandlers,
