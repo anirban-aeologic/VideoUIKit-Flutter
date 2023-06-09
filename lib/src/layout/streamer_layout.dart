@@ -1,168 +1,202 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:agora_uikit/agora_uikit.dart';
+import 'package:agora_uikit/models/agora_user.dart';
 import 'package:agora_uikit/src/layout/widgets/disabled_video_widget.dart';
+import 'package:agora_uikit/src/layout/widgets/number_of_users.dart';
 import 'package:flutter/material.dart';
+import 'package:agora_uikit/agora_uikit.dart';
 
 class StreamerLayout extends StatefulWidget {
   final AgoraClient client;
 
+  /// Display the total number of users in a channel.
+  final bool? showNumberOfUsers;
+
   /// Widget that will be displayed when the local or remote user has disabled it's video.
   final Widget? disabledVideoWidget;
 
-  /// Display the camera and microphone status of a user. This feature is only available in the [Layout.floating]
-  final bool? showAVState;
-
-  /// Display the host controls. This feature is only available in the [Layout.floating]
-  final bool? enableHostControl;
-
   /// Render mode for local and remote video
-  final RenderModeType? renderModeType;
+  final RenderModeType renderModeType;
 
   const StreamerLayout({
     Key? key,
     required this.client,
+    this.showNumberOfUsers,
     this.disabledVideoWidget = const DisabledVideoWidget(),
-    this.showAVState,
-    this.enableHostControl,
     this.renderModeType = RenderModeType.renderModeHidden,
   }) : super(key: key);
 
   @override
-  State<StreamerLayout> createState() => _OneToOneLayoutState();
+  State<StreamerLayout> createState() => _GridLayoutState();
 }
 
-class _OneToOneLayoutState extends State<StreamerLayout> {
-  Offset position = Offset(5, 5);
+class _GridLayoutState extends State<StreamerLayout> {
+  List<Widget> _getRenderViews() {
+    final List<StatefulWidget> list = [];
 
-  // Widget _getLocalViews() {
-  //   return widget.client.sessionController.value.isScreenShared
-  //       ? AgoraVideoView(
-  //           controller: VideoViewController(
-  //             rtcEngine: widget.client.sessionController.value.engine!,
-  //             canvas: const VideoCanvas(
-  //               uid: 0,
-  //               sourceType: VideoSourceType.videoSourceScreen,
-  //             ),
-  //           ),
-  //         )
-  //       : AgoraVideoView(
-  //           controller: VideoViewController(
-  //             rtcEngine: widget.client.sessionController.value.engine!,
-  //             canvas: VideoCanvas(uid: 0, renderMode: widget.renderModeType),
-  //           ),
-  //         );
+    if (widget.client.agoraChannelData?.clientRoleType ==
+            ClientRoleType.clientRoleBroadcaster ||
+        widget.client.agoraChannelData?.clientRoleType == null) {
+      widget.client.sessionController.value.isLocalVideoDisabled
+          ? list.add(
+              DisabledVideoStfWidget(
+                disabledVideoWidget: widget.disabledVideoWidget,
+              ),
+            )
+          : list.add(
+              AgoraVideoView(
+                controller: VideoViewController(
+                  rtcEngine: widget.client.sessionController.value.engine!,
+                  canvas: VideoCanvas(
+                    uid: 0,
+                    renderMode: widget.renderModeType,
+                  ),
+                ),
+              ),
+            );
+    }
+
+    for (AgoraUser user in widget.client.sessionController.value.users) {
+      if (user.clientRoleType == ClientRoleType.clientRoleBroadcaster) {
+        user.videoDisabled
+            ? list.add(
+                DisabledVideoStfWidget(
+                  disabledVideoWidget: widget.disabledVideoWidget,
+                ),
+              )
+            : list.add(
+                AgoraVideoView(
+                  controller: VideoViewController.remote(
+                    rtcEngine: widget.client.sessionController.value.engine!,
+                    
+                    canvas: VideoCanvas(
+                      uid: user.uid,
+                      renderMode: widget.renderModeType,
+                    ),
+                    connection: RtcConnection(
+
+                      channelId: widget.client.sessionController.value
+                          .connectionData!.channelName,
+                    ),
+                  ),
+                ),
+              );
+      }
+    }
+
+    return list;
+  }
+
+  Widget _videoView(view) {
+    return Expanded(child: Container(child: view));
+  }
+
+  // /// Video view row wrapper
+  // Widget _expandedVideoRow(List<Widget> views) {
+  //   final wrappedViews = views.map<Widget>(_videoView).toList();
+  //   return Expanded(
+  //     child: Row(
+  //       children: wrappedViews,
+  //     ),
+  //   );
   // }
 
-  Widget _getRemoteViews(int uid) {
-    return AgoraVideoView(
-      controller: VideoViewController.remote(
-        rtcEngine: widget.client.sessionController.value.engine!,
-        canvas: VideoCanvas(uid: uid, renderMode: widget.renderModeType),
-        connection: RtcConnection(
-          channelId:
-              widget.client.sessionController.value.connectionData!.channelName,
+  Widget _viewGrid() {
+    final views = _getRenderViews();
+    if (views.isEmpty) {
+      return Expanded(
+        child: Container(
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              'Waiting for the host to join',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
         ),
-      ),
-    );
-  }
-
-  /// Video view wrapper
-  Widget _videoView(view) {
-    return Expanded(
-      child: Container(
-        child: view,
-      ),
-    );
-  }
-
-  Widget _streamerLayout() {
-    return widget.client.users.isNotEmpty
-        ? Expanded(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Container(
-                    child: widget.client.sessionController.value.users[0]
-                            .videoDisabled
-                        ? widget.disabledVideoWidget
-                        : Stack(
-                            children: [
-                              Container(
-                                color: Colors.black,
-                                child: Center(
-                                  child: Text(
-                                    'Remote User',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                              Positioned.fill(
-                                child: Column(
-                                  children: [
-                                    _videoView(
-                                      _getRemoteViews(widget.client.users[0]),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, right: 4),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: MediaQuery.of(context).size.width / 3,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Text('Waiting for host to join..')),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        : 
-        
-        Expanded(
-            child: Container(
-              child: widget.client.sessionController.value.isLocalVideoDisabled
-                  ? widget.disabledVideoWidget
-                  : Stack(
-                      children: [
-                        Container(
-                          color: Colors.black,
-                          child: Center(
-                            child: Text(
-                              'Remote User',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        // Column(
-                        //   children: [
-                        //     _videoView(_getLocalViews()),
-                        //   ],
-                        // ),
-                      ],
-                    ),
-            ),
-          );
+      );
+    } else if (views.isNotEmpty) {
+      return Container(
+        child: Column(
+          children: <Widget>[_videoView(views[0])],
+        ),
+      );
+    } 
+    
+    // else if (views.length == 2) {
+    //   return Container(
+    //       child: Column(
+    //     children: <Widget>[
+    //       _expandedVideoRow([views[0]]),
+    //       _expandedVideoRow([views[1]])
+    //     ],
+    //   ));
+    // } else if (views.length > 2 && views.length % 2 == 0) {
+    //   return Container(
+    //     child: Column(
+    //       children: [
+    //         for (int i = 0; i < views.length; i = i + 2)
+    //           _expandedVideoRow(
+    //             views.sublist(i, i + 2),
+    //           ),
+    //       ],
+    //     ),
+    //   );
+    // } else if (views.length > 2 && views.length % 2 != 0) {
+    //   return Container(
+    //     child: Column(
+    //       children: <Widget>[
+    //         for (int i = 0; i < views.length; i = i + 2)
+    //           i == (views.length - 1)
+    //               ? _expandedVideoRow(views.sublist(i, i + 1))
+    //               : _expandedVideoRow(views.sublist(i, i + 2)),
+    //       ],
+    //     ),
+    //   );
+    // }
+    return Container();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: widget.client.sessionController,
-        builder: (context, counter, widgetx) {
-          return Column(
+      valueListenable: widget.client.sessionController,
+      builder: (context, counter, widgetx) {
+        return Center(
+          child: Stack(
             children: [
-              _streamerLayout(),
+              _viewGrid(),
+              widget.showNumberOfUsers == null ||
+                      widget.showNumberOfUsers == false
+                  ? Container()
+                  : Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: NumberOfUsers(
+                          userCount: widget
+                              .client.sessionController.value.users.length,
+                        ),
+                      ),
+                    ),
             ],
-          );
-        });
+          ),
+        );
+      },
+    );
+  }
+}
+
+class DisabledVideoStfWidget extends StatefulWidget {
+  final Widget? disabledVideoWidget;
+  const DisabledVideoStfWidget({Key? key, this.disabledVideoWidget})
+      : super(key: key);
+
+  @override
+  State<DisabledVideoStfWidget> createState() => _DisabledVideoStfWidgetState();
+}
+
+class _DisabledVideoStfWidgetState extends State<DisabledVideoStfWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.disabledVideoWidget!;
   }
 }
