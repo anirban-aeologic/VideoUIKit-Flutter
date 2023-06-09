@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:agora_uikit/agora_uikit.dart';
 
 class StreamerLayout extends StatefulWidget {
+  final bool muteMic;
   final AgoraClient client;
   final AgoraSettings settings;
 
@@ -20,6 +21,7 @@ class StreamerLayout extends StatefulWidget {
   final RenderModeType renderModeType;
 
   const StreamerLayout({
+    required this.muteMic,
     Key? key,
     required this.client,
     required this.settings,
@@ -163,7 +165,7 @@ class _GridLayoutState extends State<StreamerLayout> {
   @override
   Widget build(BuildContext context) {
     widget.settings.engine
-      ?.muteLocalAudioStream(true);
+      ?.muteLocalAudioStream(widget.muteMic);
     return ValueListenableBuilder(
       valueListenable: widget.client.sessionController,
       builder: (context, counter, widgetx) {

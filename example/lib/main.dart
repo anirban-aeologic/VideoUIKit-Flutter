@@ -1,4 +1,5 @@
 import 'package:agora_uikit/agora_uikit.dart';
+import 'package:agora_uikit/models/agora_settings.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,6 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AgoraClient client = AgoraClient(
+    muteMic: false,
     agoraConnectionData: AgoraConnectionData(
       appId: "<--Add your App Id here-->",
       channelName: "test",
@@ -43,6 +45,7 @@ class _MyAppState extends State<MyApp> {
           child: Stack(
             children: [
               AgoraVideoViewer(
+                muteMic: true,
                 client: client,
                 layoutType: Layout.floating,
                 enableHostControls: true, // Add this to enable host controls

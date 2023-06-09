@@ -8,6 +8,7 @@ import 'package:agora_uikit/models/agora_connection_data.dart';
 import 'package:agora_uikit/models/agora_rtc_event_handlers.dart';
 import 'package:agora_uikit/models/agora_rtm_channel_event_handler.dart';
 import 'package:agora_uikit/models/agora_rtm_client_event_handler.dart';
+import 'package:agora_uikit/models/agora_settings.dart';
 import 'package:agora_uikit/src/enums.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,6 +17,10 @@ import '../controllers/rtc_buttons.dart';
 
 /// [AgoraClient] is the main class in this VideoUIKit. It is used to initialize our [RtcEngine], add the list of user permissions, define the channel properties and use extend the [RtcEngineEventHandler] class.
 class AgoraClient {
+  // final AgoraSettings settings;
+
+  final bool muteMic;
+
   /// [AgoraConnectionData] is a class used to store all the connection details to authenticate your account with the Agora SDK.
   final AgoraConnectionData agoraConnectionData;
 
@@ -37,7 +42,9 @@ class AgoraClient {
   bool _initialized = false;
 
   AgoraClient({
+    // required this.settings,
     required this.agoraConnectionData,
+    required this.muteMic,
     this.enabledPermission,
     this.agoraChannelData,
     this.agoraEventHandlers,
@@ -113,6 +120,7 @@ class AgoraClient {
     }
 
     await _sessionController.joinVideoChannel();
+
     _initialized = true;
   }
 
