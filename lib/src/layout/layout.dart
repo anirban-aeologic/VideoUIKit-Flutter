@@ -99,6 +99,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         );
       case Layout.streamer:
         return StreamerLayout(
+          showNumberOfUsers: widget.showNumberOfUsers,
           client: widget.client,
           disabledVideoWidget: widget.disabledVideoWidget,
           renderModeType: widget.renderModeType,
