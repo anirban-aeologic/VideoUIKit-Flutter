@@ -134,7 +134,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         }
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
-          child: _returnLayoutClass(layout: value.layoutType, value:value),
+          child: _returnLayoutClass(layout: widget.layoutType, value:value),
           onTap: () {
             toggleVisible(
               value: value,
