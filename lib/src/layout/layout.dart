@@ -69,7 +69,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     super.initState();
   }
 
-  Widget _returnLayoutClass({required Layout layout}) {
+  Widget _returnLayoutClass({required Layout layout, required AgoraSettings value}) {
     switch (layout) {
       case Layout.floating:
         return FloatingLayout(
@@ -99,6 +99,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         );
       case Layout.streamer:
         return StreamerLayout(
+          settings : value,
           showNumberOfUsers: widget.showNumberOfUsers,
           client: widget.client,
           disabledVideoWidget: widget.disabledVideoWidget,
@@ -130,7 +131,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         }
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
-          child: _returnLayoutClass(layout: value.layoutType),
+          child: _returnLayoutClass(layout: value.layoutType, value:value),
           onTap: () {
             toggleVisible(
               value: value,

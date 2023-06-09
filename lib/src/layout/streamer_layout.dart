@@ -1,4 +1,5 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agora_uikit/models/agora_settings.dart';
 import 'package:agora_uikit/models/agora_user.dart';
 import 'package:agora_uikit/src/layout/widgets/disabled_video_widget.dart';
 import 'package:agora_uikit/src/layout/widgets/number_of_users.dart';
@@ -7,6 +8,7 @@ import 'package:agora_uikit/agora_uikit.dart';
 
 class StreamerLayout extends StatefulWidget {
   final AgoraClient client;
+  final AgoraSettings settings;
 
   /// Display the total number of users in a channel.
   final bool? showNumberOfUsers;
@@ -20,6 +22,7 @@ class StreamerLayout extends StatefulWidget {
   const StreamerLayout({
     Key? key,
     required this.client,
+    required this.settings,
     this.showNumberOfUsers,
     this.disabledVideoWidget = const DisabledVideoWidget(),
     this.renderModeType = RenderModeType.renderModeHidden,
@@ -31,6 +34,7 @@ class StreamerLayout extends StatefulWidget {
 
 class _GridLayoutState extends State<StreamerLayout> {
   List<Widget> _getRenderViews() {
+    
     final List<StatefulWidget> list = [];
 
     if (widget.client.agoraChannelData?.clientRoleType ==
@@ -158,6 +162,8 @@ class _GridLayoutState extends State<StreamerLayout> {
 
   @override
   Widget build(BuildContext context) {
+    widget.settings.engine
+      ?.muteLocalAudioStream(true);
     return ValueListenableBuilder(
       valueListenable: widget.client.sessionController,
       builder: (context, counter, widgetx) {
