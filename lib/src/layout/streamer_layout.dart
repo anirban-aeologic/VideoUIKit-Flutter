@@ -165,8 +165,12 @@ class _GridLayoutState extends State<StreamerLayout> {
   @override
   Widget build(BuildContext context) {
     if(widget.muteMic !=null) {
-      widget.settings.engine
-      ?.muteLocalAudioStream(widget.muteMic ?? false);
+      widget.settings.engine?.muteLocalVideoStream(widget.muteMic ?? widget.client.sessionController.value.isLocalUserMuted);
+      widget.settings.engine?.muteLocalAudioStream(widget.muteMic ??  widget.client.sessionController.value.isLocalUserMuted);
+      // widget.settings.engine
+      // ?.muteAllRemoteAudioStreams(widget.muteMic ?? false);
+      // widget.settings.engine
+      // ?.muteAllRemoteVideoStreams(widget.muteMic ?? false);
     }
     return ValueListenableBuilder(
       valueListenable: widget.client.sessionController,

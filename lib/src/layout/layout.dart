@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 /// A UI class to style how the video layout looks like. Use this class to choose between the two default layouts [FloatingLayout] and [GridLayout], enable active speaker, display number of users, display mic and video state of the user.
 class AgoraVideoViewer extends StatefulWidget {
-  bool muteMic;
+  bool? muteMic;
   final AgoraClient client;
 
   /// Choose between two default layouts [Layout.floating] and [Layout.grid]
@@ -44,7 +44,7 @@ class AgoraVideoViewer extends StatefulWidget {
   final RenderModeType renderModeType;
 
   AgoraVideoViewer({
-    required this.muteMic,
+    this.muteMic,
     Key? key,
     required this.client,
     this.layoutType = Layout.grid,
