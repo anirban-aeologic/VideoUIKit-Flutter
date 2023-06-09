@@ -47,7 +47,7 @@ class AgoraVideoViewer extends StatefulWidget {
     this.muteMic,
     Key? key,
     required this.client,
-    this.layoutType = Layout.grid,
+    this.layoutType = Layout.oneToOne,
     this.floatingLayoutContainerHeight,
     this.floatingLayoutContainerWidth,
     this.floatingLayoutMainViewPadding = const EdgeInsets.fromLTRB(3, 0, 3, 3),
