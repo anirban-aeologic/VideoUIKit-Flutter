@@ -5,6 +5,7 @@ import 'package:agora_uikit/models/agora_settings.dart';
 import 'package:agora_uikit/src/layout/floating_layout.dart';
 import 'package:agora_uikit/src/layout/grid_layout.dart';
 import 'package:agora_uikit/src/layout/one_to_one_layout.dart';
+import 'package:agora_uikit/src/layout/streamer_layout.dart';
 import 'package:agora_uikit/src/layout/widgets/disabled_video_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -92,6 +93,12 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         );
       case Layout.oneToOne:
         return OneToOneLayout(
+          client: widget.client,
+          disabledVideoWidget: widget.disabledVideoWidget,
+          renderModeType: widget.renderModeType,
+        );
+      case Layout.streamer:
+        return StreamerLayout(
           client: widget.client,
           disabledVideoWidget: widget.disabledVideoWidget,
           renderModeType: widget.renderModeType,

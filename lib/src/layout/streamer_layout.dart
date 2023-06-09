@@ -3,7 +3,7 @@ import 'package:agora_uikit/agora_uikit.dart';
 import 'package:agora_uikit/src/layout/widgets/disabled_video_widget.dart';
 import 'package:flutter/material.dart';
 
-class OneToOneLayout extends StatefulWidget {
+class StreamerLayout extends StatefulWidget {
   final AgoraClient client;
 
   /// Widget that will be displayed when the local or remote user has disabled it's video.
@@ -18,7 +18,7 @@ class OneToOneLayout extends StatefulWidget {
   /// Render mode for local and remote video
   final RenderModeType? renderModeType;
 
-  const OneToOneLayout({
+  const StreamerLayout({
     Key? key,
     required this.client,
     this.disabledVideoWidget = const DisabledVideoWidget(),
@@ -28,30 +28,30 @@ class OneToOneLayout extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<OneToOneLayout> createState() => _OneToOneLayoutState();
+  State<StreamerLayout> createState() => _OneToOneLayoutState();
 }
 
-class _OneToOneLayoutState extends State<OneToOneLayout> {
+class _OneToOneLayoutState extends State<StreamerLayout> {
   Offset position = Offset(5, 5);
 
-  Widget _getLocalViews() {
-    return widget.client.sessionController.value.isScreenShared
-        ? AgoraVideoView(
-            controller: VideoViewController(
-              rtcEngine: widget.client.sessionController.value.engine!,
-              canvas: const VideoCanvas(
-                uid: 0,
-                sourceType: VideoSourceType.videoSourceScreen,
-              ),
-            ),
-          )
-        : AgoraVideoView(
-            controller: VideoViewController(
-              rtcEngine: widget.client.sessionController.value.engine!,
-              canvas: VideoCanvas(uid: 0, renderMode: widget.renderModeType),
-            ),
-          );
-  }
+  // Widget _getLocalViews() {
+  //   return widget.client.sessionController.value.isScreenShared
+  //       ? AgoraVideoView(
+  //           controller: VideoViewController(
+  //             rtcEngine: widget.client.sessionController.value.engine!,
+  //             canvas: const VideoCanvas(
+  //               uid: 0,
+  //               sourceType: VideoSourceType.videoSourceScreen,
+  //             ),
+  //           ),
+  //         )
+  //       : AgoraVideoView(
+  //           controller: VideoViewController(
+  //             rtcEngine: widget.client.sessionController.value.engine!,
+  //             canvas: VideoCanvas(uid: 0, renderMode: widget.renderModeType),
+  //           ),
+  //         );
+  // }
 
   Widget _getRemoteViews(int uid) {
     return AgoraVideoView(
@@ -75,7 +75,7 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
     );
   }
 
-  Widget _oneToOneLayout() {
+  Widget _streamerLayout() {
     return widget.client.users.isNotEmpty
         ? Expanded(
             child: Stack(
@@ -118,7 +118,7 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
                       width: MediaQuery.of(context).size.width / 3,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
-                          child: _getLocalViews()),
+                          child: Text('Waiting for host to join..')),
                     ),
                   ),
                 ),
@@ -137,16 +137,16 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
                           color: Colors.black,
                           child: Center(
                             child: Text(
-                              'Local User',
+                              'Remote User',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
-                        Column(
-                          children: [
-                            _videoView(_getLocalViews()),
-                          ],
-                        ),
+                        // Column(
+                        //   children: [
+                        //     _videoView(_getLocalViews()),
+                        //   ],
+                        // ),
                       ],
                     ),
             ),
@@ -160,7 +160,7 @@ class _OneToOneLayoutState extends State<OneToOneLayout> {
         builder: (context, counter, widgetx) {
           return Column(
             children: [
-              _oneToOneLayout(),
+              _streamerLayout(),
             ],
           );
         });
