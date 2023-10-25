@@ -19,7 +19,7 @@ class _NumberOfUsersState extends State<NumberOfUsers> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        color: Colors.black54,
+        color: Colors.black12,
         padding: const EdgeInsets.all(3),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -29,7 +29,7 @@ class _NumberOfUsersState extends State<NumberOfUsers> {
               color: Colors.white,
             ),
             Text(
-              ' ${widget.userCount + 1}',
+              ' ${widget.userCount}',
               style: TextStyle(color: Colors.white),
             ),
           ],
