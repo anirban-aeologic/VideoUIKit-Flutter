@@ -64,59 +64,6 @@ Future<void> rtmClientEventHandler({
     );
   };
 
-  agoraRtmCallManager.onLocalInvitationReceivedByPeer =
-      (LocalInvitation invitation) {
-    agoraRtmClientEventHandler.onLocalInvitationReceivedByPeer
-        ?.call(invitation);
-  };
-
-  agoraRtmCallManager.onLocalInvitationAccepted =
-      (LocalInvitation invitation, String tempString) {
-    agoraRtmClientEventHandler.onLocalInvitationAccepted?.call(invitation);
-  };
-
-  agoraRtmCallManager.onLocalInvitationRefused =
-      (LocalInvitation invitation, String tempString) {
-    agoraRtmClientEventHandler.onLocalInvitationRefused?.call(invitation);
-  };
-
-  agoraRtmCallManager.onLocalInvitationCanceled =
-      (LocalInvitation invitation) {
-    agoraRtmClientEventHandler.onLocalInvitationCanceled?.call(invitation);
-  };
-
-  agoraRtmCallManager.onLocalInvitationFailure =
-      (LocalInvitation invitation, int errorCode) {
-    agoraRtmClientEventHandler.onLocalInvitationFailure
-        ?.call(invitation, errorCode);
-  };
-
-  agoraRtmCallManager.onRemoteInvitationReceived =
-      (RemoteInvitation invitation) {
-    agoraRtmClientEventHandler.onRemoteInvitationReceivedByPeer
-        ?.call(invitation);
-  };
-
-  agoraRtmCallManager.onRemoteInvitationAccepted =
-      (RemoteInvitation invitation) {
-    agoraRtmClientEventHandler.onRemoteInvitationAccepted?.call(invitation);
-  };
-
-  agoraRtmCallManager.onRemoteInvitationRefused =
-      (RemoteInvitation invitation) {
-    agoraRtmClientEventHandler.onRemoteInvitationRefused?.call(invitation);
-  };
-
-  agoraRtmCallManager.onRemoteInvitationCanceled =
-      (RemoteInvitation invitation) {
-    agoraRtmClientEventHandler.onRemoteInvitationCanceled?.call(invitation);
-  };
-
-  agoraRtmCallManager.onRemoteInvitationFailure =
-      (RemoteInvitation invitation, int errorCode) {
-    agoraRtmClientEventHandler.onRemoteInvitationFailure
-        ?.call(invitation, errorCode);
-      }
   agoraRtmClient.onPeersOnlineStatusChanged = (peersStatus) {
     agoraRtmClientEventHandler.onPeersOnlineStatusChanged?.call(peersStatus);
   };
