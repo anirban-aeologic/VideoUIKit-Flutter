@@ -22,12 +22,9 @@ Future<void> rtmClientEventHandler({
     Message msg = Message(text: message.text);
     String? messageType;
 
-    message.toJson().forEach((key, val) {
-      if (key == "text") {
-        var json = jsonDecode(val.toString());
-        messageType = json['messageType'];
-      }
-    });
+    final body = json.decode(message.text);
+    messageType = body['messageType'];
+
     messageReceived(
       messageType: messageType!,
       message: msg.toJson(),
@@ -35,15 +32,15 @@ Future<void> rtmClientEventHandler({
     );
   };
 
-  agoraRtmClient.onConnectionStateChanged = (int state, int reason) {
-    agoraRtmClientEventHandler.onConnectionStateChanged?.call(state, reason);
+  agoraRtmClient.onConnectionStateChanged2 = (state, reason) {
+    agoraRtmClientEventHandler.onConnectionStateChanged2?.call(state, reason);
 
     log(
       'Connection state changed : ${state.toString()}, reason : ${reason.toString()}',
       level: Level.info.value,
       name: tag,
     );
-    if (state == 5) {
+    if (state == RtmConnectionState.aborted) {
       agoraRtmClient.logout();
     }
   };
@@ -119,5 +116,12 @@ Future<void> rtmClientEventHandler({
       (RemoteInvitation invitation, int errorCode) {
     agoraRtmClientEventHandler.onRemoteInvitationFailure
         ?.call(invitation, errorCode);
+      }
+  agoraRtmClient.onPeersOnlineStatusChanged = (peersStatus) {
+    agoraRtmClientEventHandler.onPeersOnlineStatusChanged?.call(peersStatus);
+  };
+
+  agoraRtmClient.onTokenPrivilegeWillExpire = () {
+    agoraRtmClientEventHandler.onTokenPrivilegeWillExpire?.call();
   };
 }
